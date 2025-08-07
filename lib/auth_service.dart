@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 ValueNotifier<AuthService> authService = ValueNotifier(AuthService());
 String getFirebaseAuthErrorMessage(String code) {
@@ -42,6 +43,29 @@ class AuthService {
           email: email,
           password: password,
         ),
+        null,
+      );
+    } on FirebaseAuthException catch (e) {
+      return (null, getFirebaseAuthErrorMessage(e.code));
+    }
+  }
+
+  Future<(UserCredential?, String?)> signInWithGoogle() async {
+    try {
+      await GoogleSignIn.instance.initialize(
+        clientId:
+            "1005316926305-5b59d83qofoea7petelmjnuof2skj5q4.apps.googleusercontent.com",
+        serverClientId:
+            "1005316926305-is9lb0c5v30uo8tbgq8ckpbp42srre8t.apps.googleusercontent.com",
+      );
+      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
+          .authenticate();
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
+      return (
+        await FirebaseAuth.instance.signInWithCredential(credential),
         null,
       );
     } on FirebaseAuthException catch (e) {

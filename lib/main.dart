@@ -158,16 +158,32 @@ class LoginFormState extends State<LoginForm> {
                             password: _passwordController.text,
                           );
                           if (error != null) {
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(SnackBar(backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                            content: Row(
-                              children: [
-                                Icon(Icons.error,color: Theme.of(context).colorScheme.error,),
-                                SizedBox(width: 10,),
-                                Text(error, style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),),
-                              ],
-                            )));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.errorContainer,
+                                content: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.error,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.error,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      error,
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onErrorContainer,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
                           }
                         }
                       },
@@ -195,7 +211,37 @@ class LoginFormState extends State<LoginForm> {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: OutlinedButton.icon(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final (user, error) = await authService.value
+                          .signInWithGoogle();
+
+                      if (error != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.errorContainer,
+                            content: Row(
+                              children: [
+                                Icon(
+                                  Icons.error,
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  error,
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onErrorContainer,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                    },
                     icon: FaIcon(FontAwesomeIcons.google),
                     label: Text('Đăng nhập với Google'),
                   ),
